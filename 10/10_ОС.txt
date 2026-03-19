@@ -1,0 +1,9 @@
+1.
+Ссылка на задание PRO ведёт на гугл-диск, а не не колаб, что не удобно.
+
+2.
+Какие только зависимости не устанавливал, не смог импортировать
+from langchain.docstore.document import Document
+Импортировал из
+from langchain_core.documents import Document
+Надеюсь это не ошибка
