@@ -1,0 +1,47 @@
+1.
+Текст кода не согласуется с пояснениями данными к этому коду выше.
+В этой ячейке
+https://colab.research.google.com/drive/1RLwvun8QbNGyoYh1lcPdKRLntzc3ok2-#scrollTo=_BHIPXGAThMN&line=1&uniqifier=1
+записано
+len([1, 3, 'hi'])
+Ожидалось
+len(1, 3, 'hi')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: len() takes exactly one argument (3 given)
+
+2.
+В двух ячейках ошибка:
+https://colab.research.google.com/drive/1RLwvun8QbNGyoYh1lcPdKRLntzc3ok2-#scrollTo=3QMac4hLsJ01
+https://colab.research.google.com/drive/1RLwvun8QbNGyoYh1lcPdKRLntzc3ok2-#scrollTo=bC3WLj9Cu3IX
+# написано:
+list.pop([i])
+# ожидалось:
+list.pop(i)
+
+3.
+Лишняя ячейка, дублирует информацию из ячейки ниже.
+https://colab.research.google.com/drive/1RLwvun8QbNGyoYh1lcPdKRLntzc3ok2-#scrollTo=a5-mbdEV1TMm&line=1&uniqifier=1
+
+4.
+Улыбнуло :)
+"У кортежей всего два полезных метода: `index` и `count`."
+https://colab.research.google.com/drive/1i1tCymUcnwExkiIJvVnm-3WDDItWfFfW#scrollTo=XFDZZzQJMLHD
+А остальные методы бесполезные? :) Или просто не применимые?
+Может просто: "У кортежей есть два метода: `index` и `count`."
+
+5.
+https://colab.research.google.com/drive/1MnGhJoGTNHmuApqcYhhARX537_sCiOWm#scrollTo=XrTJPHO3pJLH&line=1&uniqifier=1
+Ячейка выглядит лишней, ибо тоже самое повторяется ниже, но ниже более последовательно излагается.
+И если эту ячейку признать лишней, то и предыдущая ячейка тоже становится ненужной.
+
+6.
+Задание Pro дана ссылка на диск, а не на колаб, что не удобно.
+
+Просто ОС:
+Никогда бы не подумал, что при итерации по элементам списка можно менять этот список, только сделать это можно один раз и при этом надо обязательно прервать выполнение цикла. Ну об этом можно было бы подумать, но зачем так делать? Выглядит как частный случай, редко применимый на практике, если не считать обучение. https://colab.research.google.com/drive/1RLwvun8QbNGyoYh1lcPdKRLntzc3ok2-#scrollTo=x6LfvYhOUlrz&line=1&uniqifier=1
+Ну вообще здорово придумали!
+
+Так как тема python мне знакома, то видео по этой теме не смотрю, это очень ресурсозатратно по времени. Когда будет новый материал, то буду и видео, наверное, смотреть. Надо побыстрее добраться до нового материала, думаю там будет "мясо".
+
+Хоть материал знакомый, но всё равно попадаются новые тонкие детали.

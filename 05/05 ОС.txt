@@ -1,0 +1,26 @@
+1.
+В ячейке:
+https://colab.research.google.com/drive/1mEmLg7OlnokmxO5Nu3O6AluBAVXBd1yV#scrollTo=SIe4gzOCyHWm&line=1&uniqifier=1
+Напсано:
+	# Функция поиска суммы всех чисел в списке
+Ожидалось:
+	# Функция поиска среднего всех чисел в списке
+
+2.
+В ячейке:
+https://colab.research.google.com/drive/1mEmLg7OlnokmxO5Nu3O6AluBAVXBd1yV#scrollTo=kg50yc3_isHv&line=1&uniqifier=1
+Написано:
+	# Применяем функцию red() к каждому слову из списка mics
+	red_mics = map(lambda x: 'Оранжевый ' + x, mics)
+
+	# Посмотрим результат red_mics
+	for red_object in red_mics:
+	  print(red_object)
+
+Ожидалось:
+	# Применяем lambda функцию к каждому слову из списка mics
+	orange_mics = map(lambda x: 'Оранжевый ' + x, mics)
+
+	# Посмотрим результат orange_mics
+	for orange_object in orange_mics:
+	  print(orange_object)

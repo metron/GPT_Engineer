@@ -1,0 +1,63 @@
+1. 
+В ячейке два раза подряд повторяется выражение, явная ошибка "математической формулы: 𝑎 𝑥 2 + 𝑏 𝑥 + 𝑐 ax 2 +bx+c."
+https://colab.research.google.com/drive/1x9OeKQNeeRF_YMbbTDjpuZ1DbigXTeda#scrollTo=3Sd2Um2Ivt9K
+
+2.
+Странная ячейка "print( (2*3**2)+(2*3)+2 )"
+https://colab.research.google.com/drive/1x9OeKQNeeRF_YMbbTDjpuZ1DbigXTeda#scrollTo=N3uBk9DDDDl5&line=1&uniqifier=1
+На её место должна быть другая, со следующим блоком кода, судя по пояснениям дальше.
+"
+evaluate = multiply(2,2,2)
+result = evaluate(3)
+print(result)
+"
+
+3.
+Дублированная ячейка, ей тут не место, она была уже выше по ноутбуку.
+https://colab.research.google.com/drive/1x9OeKQNeeRF_YMbbTDjpuZ1DbigXTeda#scrollTo=CYBd6wUSFBPa&line=3&uniqifier=1
+
+4.
+В ячейке, кажется, ошибка
+Написано:
+    def __lt__(self, other):
+        return self.grade > other.grade
+Ожидалось:
+    def __lt__(self, other):
+        return self.grade < other.grade
+https://colab.research.google.com/drive/1x9OeKQNeeRF_YMbbTDjpuZ1DbigXTeda#scrollTo=g2q9CIEF1MLS&line=11&uniqifier=1
+
+5.
+Битая ссылка
+scrapli ChannelTimeout (https://github.com/carlmontanari/scrapli/blob/main/scrapli/decorators.py#L193)
+
+6.
+Ноутбук Модули, опечатка:
+Посмотрим на определении функции в коде модуля:
+Посмотрим на определениЕ функции в коде модуля:
+
+7.
+Ноутбук Модули, опечатка:
+Иллюстрация использование функции check_text() с параметрами по умолчанию
+Иллюстрация использованиЯ функции check_text() с параметрами по умолчанию
+
+8.
+Ноутбук Работа со строками, опечатка:
+Используем некоторые последовательностей:
+Используем некоторые из последовательностей:
+Или
+Используем некоторые последовательности:
+
+9.
+Ноутбук "работа со строками"
+Перед ячейкой ожидалось, что будут даны какие-то пояснения про r-строки в python
+https://colab.research.google.com/drive/1Ppg5qcaa9cQG_7J8sfXOSUQ7PZ4mtZPC#scrollTo=_G4CtGAXUO0b&line=1&uniqifier=1
+
+10.
+Ячейка: https://colab.research.google.com/drive/1BQIiYwply8DevcJHPCIwZqI0MzzYxyd-#scrollTo=ot6hLxIjffmX
+Написано:
+Напишите функцию замыкание, для решения по заданному условию, типа:
+Ожидалось (я не знаю, что там ожидалось, но предположительно):
+Напишите функцию замыкание, для решения квадратного уравнения по заданному условию, типа:
+
+11.
+Задачу 6 из Pro задания вообще не понял, чего от меня хотят и даже не знаю как её корректно переформулировать. Я знаю как работают замыкания и умею этим пользоваться, но просто не понятно требование задачи, набор отдалённо связанных между собой слов, а не формулировка требований. В итоге спросил пояснения у нейро-куратора, а ему оказалось проще мне просто выдать вариант решения, а не пояснить условие. Правда я его решение немного доработал, по смыслу.
