@@ -1,0 +1,5 @@
+1.
+Ячейка: https://colab.research.google.com/drive/1awF91MRzLr8YImKmSdHNLNFHznI3mEYF#scrollTo=TWY9Z1l1WgmE
+"Загрузка ранее сохраненных векторной базы FAISS и объединение из нескольких в одну" - написано
+"Загрузка ранее сохраненной векторной базы FAISS и объединение из нескольких в одну" - ожидалось
+
