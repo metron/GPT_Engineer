@@ -1,3 +1,4 @@
+kb_conf.json
 **/*.pkl
 **/*.faiss
 **/knowledge_base.txt

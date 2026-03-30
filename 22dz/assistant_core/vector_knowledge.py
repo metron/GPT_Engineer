@@ -1,14 +1,17 @@
+import hashlib
+import json
 import os
-from pathlib import Path
 from functools import lru_cache
-from langchain_core.documents import Document
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
+from pathlib import Path
 
+from langchain_community.vectorstores import FAISS
+from langchain_core.documents import Document
+from langchain_openai import OpenAIEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 BASE_DIR: Path = Path(__file__).resolve().parent
 KB_TEXT_PATH: Path = BASE_DIR / "kb" / "knowledge_base.txt"
+KB_CONF_PATH: Path = BASE_DIR / "kb" / "kb_conf.json"
 FAISS_INDEX_DIR: Path = BASE_DIR / "kb" / "faiss_index"
 
 
@@ -30,8 +33,11 @@ def _split_text_to_documents(text: str) -> list[Document]:
 
 
 def _build_embeddings() -> OpenAIEmbeddings:
-    embeddings_model = os.getenv("EMBEDDINGS_MODEL", "text-embedding-3-small")
-    return OpenAIEmbeddings(model=embeddings_model)
+    return OpenAIEmbeddings(
+        api_key=os.getenv("OPENAI_API_KEY"),
+        base_url=os.getenv("OPENAI_API_BASE"),
+        model=os.getenv("EMBEDDINGS_MODEL", "text-embedding-3-small")
+    )
 
 
 def build_and_save_faiss_index() -> FAISS:
@@ -48,10 +54,28 @@ def build_and_save_faiss_index() -> FAISS:
     return db_index
 
 
-@lru_cache(maxsize=1)
+def check_hash_changed(file_path):
+    hash_obj = hashlib.sha256()
+    with open(str(KB_TEXT_PATH), "rb") as f:
+        hash_obj.update(f.read())
+        kb_hash = hash_obj.hexdigest()
+    if file_path.exists():
+        with open(str(file_path), "r") as f:
+            kb_conf = json.load(f)
+        if kb_conf[KB_TEXT_PATH.name] == kb_hash:
+            print("check_hash_changed - False")
+            return False
+
+    with open(str(file_path), "w") as f:
+        kb_conf = {KB_TEXT_PATH.name: kb_hash}
+        json.dump(kb_conf, f)
+    print("check_hash_changed - True")
+    return True
+
+
 def get_db_index() -> FAISS:
-    embeddings = _build_embeddings()
-    if FAISS_INDEX_DIR.exists():
+    if FAISS_INDEX_DIR.exists() and not check_hash_changed(KB_CONF_PATH):
+        embeddings = _build_embeddings()
         return FAISS.load_local(
             str(FAISS_INDEX_DIR),
             embeddings,
@@ -59,13 +83,3 @@ def get_db_index() -> FAISS:
         )
 
     return build_and_save_faiss_index()
-
-
-def find_relevant_snippets(query: str, k: int = 4) -> str:
-    db_index = get_db_index()
-    docs = db_index.similarity_search(query, k=k)
-    snippets: list[str] = []
-    for doc in docs:
-        snippets.append(doc.page_content.strip())
-
-    return "\n\n---\n\n".join(snippets)

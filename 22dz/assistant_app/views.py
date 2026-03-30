@@ -36,7 +36,8 @@ def assistant_index(request):
         else:
             try:
                 answer = run_assistant(question=question, history=history)
-            except Exception:
+            except Exception as e:
+                print(str(e))
                 answer = ""
                 error_message = "Произошла ошибка при обработке запроса. Попробуйте ещё раз."
 
