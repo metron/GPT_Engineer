@@ -1,6 +1,4 @@
 import os
-import re
-import requests
 from openai import AsyncOpenAI
 from dotenv import load_dotenv
 import os
