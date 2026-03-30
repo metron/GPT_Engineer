@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Нейро-консультант</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 980px; margin: 24px auto; padding: 0 16px; }
+        .card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+        textarea { width: 100%; min-height: 120px; padding: 10px; font-size: 14px; }
+        button { padding: 10px 14px; font-size: 14px; cursor: pointer; }
+        .answer { white-space: pre-wrap; background: #fafafa; border: 1px solid #eee; border-radius: 8px; padding: 12px; }
+        .history { white-space: pre-wrap; background: #f6f7fb; border: 1px solid #e6e8f0; border-radius: 8px; padding: 12px; }
+        .muted { color: #666; font-size: 13px; }
+        .error { background: #fff3f3; border: 1px solid #ffd0d0; color: #7a0000; padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; }
+        .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    </style>
+</head>
+<body>
+
+<h1>Нейро-консультант</h1>
+<p class="muted">
+    Задавайте уточняющие вопросы — ассистент учитывает историю диалога (как в ноутбуке).
+</p>
+
+{% if error_message %}
+<div class="error">
+    {{ error_message }}
+</div>
+{% endif %}
+
+<div class="card">
+    <form method="post">
+        {% csrf_token %}
+
+        <label for="question"><b>Ваш вопрос:</b></label><br /><br />
+        <textarea id="question" name="question" placeholder="Например: Как оформить возврат?">{{ question }}</textarea>
+        <br /><br />
+
+        <div class="row">
+            <button type="submit">Спросить</button>
+
+            <button type="submit" name="action" value="clear_history">Очистить историю</button>
+        </div>
+    </form>
+</div>
+
+{% if history %}
+<div class="card">
+    <h2>История диалога:</h2>
+    <div class="history">{{ history }}</div>
+</div>
+{% endif %}
+
+{% if answer %}
+<div class="card">
+    <h2>Ответ:</h2>
+    <div class="answer">{{ answer }}</div>
+</div>
+{% endif %}
+
+</body>
+</html>
