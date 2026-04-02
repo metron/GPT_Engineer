@@ -1,6 +1,6 @@
 # app/modules/notes/model.py
 
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, text
 from sqlalchemy.orm import relationship
 from app.utils.database import Base
 
@@ -25,3 +25,4 @@ class Note(Base):
 
     # Связь с пользователем
     user = relationship("User", back_populates="notes")
+    created_at = Column(DateTime, server_default=text('(CURRENT_TIMESTAMP)'), nullable=False)
