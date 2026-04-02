@@ -10,13 +10,13 @@
 4. Возврат результата пользователю в JSON формате
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.gpt_crud.service import call_gpt, execute_sql
-from app.utils.database import get_db
 from app.modules.auth.route import get_current_user
 from app.modules.gpt_crud.schema import GPTCRUDRequest, GPTCRUDResponse
+from app.modules.gpt_crud.service import call_gpt, execute_sql
+from app.utils.database import get_db
 
 router = APIRouter(prefix="/gpt_crud", tags=["GPT CRUD"])
 
@@ -44,6 +44,7 @@ async def gpt_crud_endpoint(
         "Сохрани контакты менеджера по созданию сайта"
         "Напомни что я должен был сделать к пятнице"
         "Напомни контакты менеджера по сайту"
+        "Покажи заметки за прошлый месяц"
     - SQL-запрос формируется с учётом user_id
     """
     try:

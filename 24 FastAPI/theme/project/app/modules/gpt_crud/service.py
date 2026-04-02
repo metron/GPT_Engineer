@@ -11,15 +11,18 @@
 5. Обработка SELECT и не-SELECT запросов корректно
 6. Логирование всех шагов через app.state.log
 """
+import os
+from datetime import datetime
+from typing import Dict, List
 
 import aiofiles
 import httpx
-import os
-from app.config import settings
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import text
-from typing import List, Dict
 from fastapi import Request
+from openai import AsyncOpenAI
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.config import settings
 
 # ────────────── LLM настройки ──────────────
 LLM_BASE_URL = getattr(settings, "LLM_BASE_URL", "https://api.openai.com/v1/responses")
@@ -41,12 +44,29 @@ async def read_prompt() -> str:
     return "You are a SQL generator for notes app. Generate CRUD SQL queries based on user request."
 
 
+limits = httpx.Limits(max_connections=100, max_keepalive_connections=20)
+timeout = httpx.Timeout(60.0, connect=10.0)
+
+async_http_client = httpx.AsyncClient(
+    limits=limits,
+    timeout=timeout,
+    # proxy="http://your-proxy.com" # Если нужен прокси
+)
+
+# 2. Инициализация OpenAI клиента с использованием httpx.AsyncClient
+
+client = AsyncOpenAI(
+    api_key=LLM_API_KEY,
+    base_url=LLM_BASE_URL,
+    http_client=async_http_client
+)
+
 # ────────────── Вызов LLM с user_id ──────────────
 async def call_gpt(
     user_request: str,
     user_id: int,
     request: Request,
-    temperature: float = 0.7,
+    temperature: float = 0.1,
     max_tokens: int = 300
 ) -> str:
     """
@@ -65,49 +85,42 @@ async def call_gpt(
     await log.log_info(target="GPT CRUD", message=f"Прочитан базовый промпт (первые 200 символов): {base_prompt[:200]}")
 
     # ────────────── Формируем полный промпт для LLM ──────────────
-    full_prompt = f"""
-{base_prompt}
-
-User ID: {user_id}
-User request: {user_request}
-
-Rules:
-- Все SQL-запросы должны фильтровать записи по User ID.
-- Для поиска используем SQL LIKE %слово% для каждого корня слова из запроса.
-- Генерируем SQL только для текущего пользователя.
-- CRUD операции: CREATE, READ, UPDATE, DELETE.
-- Для UPDATE/DELETE сначала ищем note_id через LIKE-поиск.
-- Возвращаем только SQL без объяснений.
-"""
+    user_content = f"""
+        User ID: {user_id}
+        User request: {user_request}
+        Текущая дата: {datetime.now().strftime("%Y-%m-%d")}
+    """
+    assistant = """
+        Rules:
+        - Все SQL-запросы должны фильтровать записи по User ID
+        - SQL-запросы должны фильтровать записи по полю created_at, если в запросе указан период времени
+        - Для поиска используем SQL LIKE %слово% для каждого корня слова из запроса.
+        - Генерируем SQL только для текущего пользователя.
+        - CRUD операции: CREATE, READ, UPDATE, DELETE.
+        - Для UPDATE/DELETE сначала ищем note_id через LIKE-поиск.
+        - Возвращаем только SQL без объяснений.
+    """
 
     await log.log_info(target="GPT CRUD", message=f"Формирование запроса к LLM с учётом user_id")
 
-    headers = {
-        "Authorization": f"Bearer {LLM_API_KEY}",
-        "Content-Type": "application/json"
-    }
-
-    payload = {
-        "model": LLM_MODEL,
-        "input": full_prompt,
-        "temperature": temperature,
-        "max_output_tokens": max_tokens
-    }
-
     # ────────────── Отправка запроса к LLM ──────────────
-    async with httpx.AsyncClient(timeout=60) as client:
-        resp = await client.post(LLM_BASE_URL, headers=headers, json=payload)
-        if resp.status_code != 200:
-            await log.log_error(target="GPT CRUD", message=f"Ошибка LLM API: {resp.status_code}, {resp.text}")
-            raise RuntimeError(f"LLM API error: {resp.status_code}, {resp.text}")
+    resp = await client.chat.completions.create(
+        model=LLM_MODEL,
+        temperature=temperature,
+        messages=[
+            {"role": "system", "content": base_prompt},
+            {"role": "assistant", "content": assistant},
+            {"role": "user", "content": user_content}
+        ],
+        max_tokens=max_tokens
+    )
 
-        data = resp.json()
-        try:
-            # структура ответа Responses API
-            sql_query = data["output"][0]["content"][0]["text"]
-        except (KeyError, IndexError, TypeError):
-            await log.log_error(target="GPT CRUD", message=f"Неверный формат ответа LLM: {data}")
-            raise RuntimeError(f"Unexpected LLM response format: {data}")
+    try:
+        # структура ответа Responses API
+        sql_query = resp.choices[0].message.content
+    except (KeyError, IndexError, TypeError):
+        await log.log_error(target="GPT CRUD", message=f"Неверный формат ответа LLM: {resp}")
+        raise RuntimeError(f"Unexpected LLM response format: {resp}")
 
     await log.log_info(target="GPT CRUD", message=f"Сгенерирован SQL-запрос:\n{sql_query}")
     return sql_query.strip()

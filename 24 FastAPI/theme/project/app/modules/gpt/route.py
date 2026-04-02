@@ -9,10 +9,13 @@
 3. Асинхронный вызов GPT через service.py
 """
 
-from fastapi import APIRouter, HTTPException, status, Depends
+from datetime import datetime
+
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from app.modules.auth.route import get_current_user  # проверка авторизации
 from app.modules.gpt.schema import GPTRequest, GPTResponse
 from app.modules.gpt.service import call_gpt
-from app.modules.auth.route import get_current_user  # проверка авторизации
 
 router = APIRouter(prefix="/gpt", tags=["gpt"])
 
@@ -25,7 +28,7 @@ async def gpt_endpoint(request: GPTRequest, current_user=Depends(get_current_use
     """
     try:
         answer = await call_gpt(
-            prompt=request.prompt,
+            prompt=f"""{request.prompt}\nТекущая дата: {datetime.now().strftime("%Y-%m-%d")}""",
             temperature=request.temperature,
             max_tokens=request.max_tokens
         )
